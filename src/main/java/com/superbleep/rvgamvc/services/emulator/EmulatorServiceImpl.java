@@ -5,10 +5,10 @@ import com.superbleep.rvgamvc.domain.Platform;
 import com.superbleep.rvgamvc.dto.EmulatorDTO;
 import com.superbleep.rvgamvc.mappers.EmulatorMapper;
 import com.superbleep.rvgamvc.repositories.EmulatorRepository;
+import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,20 +16,37 @@ import java.util.stream.Collectors;
 @Service
 public class EmulatorServiceImpl implements EmulatorService {
     private final EmulatorRepository emulatorRepository;
+    private final PlatformRepository platformRepository;
     private final EmulatorMapper emulatorMapper;
 
-    public EmulatorServiceImpl(EmulatorRepository emulatorRepository, EmulatorMapper emulatorMapper) {
+    public EmulatorServiceImpl(EmulatorRepository emulatorRepository, PlatformRepository platformRepository,
+                               EmulatorMapper emulatorMapper) {
         this.emulatorRepository = emulatorRepository;
+        this.platformRepository = platformRepository;
         this.emulatorMapper = emulatorMapper;
     }
 
     @Override
-    public EmulatorDTO save(EmulatorDTO emulatorDto, List<Platform> platforms) {
-        if (platforms.isEmpty())
+    public EmulatorDTO save(EmulatorDTO emulatorDto) {
+        if (emulatorDto.getPlatformIds().isEmpty())
             throw new RuntimeException("An emulator must have at least one platform associated!");
 
-        Emulator saved = emulatorRepository.save(emulatorMapper.toEmulator(emulatorDto));
-        saved.setPlatforms(platforms);
+        boolean validPlatforms = emulatorDto.getPlatformIds().stream()
+                .allMatch(platformRepository::existsById);
+
+        if(!validPlatforms) {
+            List<Long> missing = emulatorDto.getPlatformIds().stream()
+                    .filter(id -> !platformRepository.existsById(id))
+                    .toList();
+
+            throw new RuntimeException("Some platforms don't exist in the database: " + missing);
+        }
+
+        Emulator toBeSaved = emulatorMapper.toEmulator(emulatorDto);
+        List<Platform> platforms = platformRepository.findAllById(emulatorDto.getPlatformIds());
+        toBeSaved.setPlatforms(platforms);
+
+        Emulator saved = emulatorRepository.save(toBeSaved);
 
         return emulatorMapper.toDto(saved);
     }
@@ -46,7 +63,7 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public List<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear) {
-        List<Emulator> emulators = new ArrayList<>();
+        List<Emulator> emulators;
 
         if (name == null && developer == null & platformName == null && releaseYear == null) {
             emulators = emulatorRepository.findAll();
@@ -63,6 +80,9 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public void deleteById(Long id) {
+        if (!emulatorRepository.existsById(id))
+            throw new RuntimeException("Emulator not found!");
+
         emulatorRepository.deleteById(id);
     }
 }
