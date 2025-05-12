@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit Emulator</title>
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+
+        <script src="/js/emulatorSelectPlatforms.js"></script>
+
+        <style>
+            ::placeholder {
+                color: #ced4da !important;
+                opacity: 1;
+            }
+
+            input.form-control::placeholder {
+                color: #dee2e6 !important
+            }
+
+            .cursor-pointer {
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body class="bg-dark text-light">
+        <div class="container mt-4">
+            <div class="d-flex align-items-center justify-content-start mb-4">
+                <a href="#" th:href="@{/emulators}" class="btn btn-outline-info me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="m-0 text-info">Edit Emulator</h1>
+            </div>
+
+            <div id="platformError" class="text-danger fw-bold mb-3" style="display: none;"></div>
+
+            <form class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label for="name" class="form-label text-light">Name</label>
+                    <input type="text" name="name" id="name" class="form-control bg-dark text-light border-info"
+                           placeholder="Name" th:value="${emulator.name}">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="developer" class="form-label text-light">Developer</label>
+                    <input type="text" name="developer" id="developer" class="form-control bg-dark text-light border-info"
+                           placeholder="Developer" th:value="${emulator.developer}">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="releaseYear" class="form-label text-light">Release Year</label>
+                    <input type="number" name="releaseYear" id="releaseYear" class="form-control bg-dark text-light border-info"
+                           placeholder="Release Year" th:value="${#dates.format(emulator.release, 'yyyy')}">
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label text-light">Selected Platforms</label>
+
+                    <div id="selectedPlatforms" class="mb-2 d-flex flex-wrap gap-2">
+                        <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
+                              th:each="platform : ${platforms}"
+                              th:if="${emulator.platformIds.contains(platform.id)}"
+                              th:attr="data-id=${platform.id}">
+                            <span th:text="${platform.name}" class="me-2"></span>
+                            <i class="fas fa-times cursor-pointer" onclick="removePlatform(this)"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <label for="platformSelect" class="form-label text-light">Add Platform</label>
+
+                    <div class="input-group">
+                        <select id="platformSelect" class="form-select bg-dark text-light border-info">
+                            <option th:each="platform : ${platforms}"
+                                    th:value="${platform.id}"
+                                    th:text="${platform.name}"></option>
+                        </select>
+                        <button type="button" class="btn btn-outline-info" onclick="addPlatform()">Add</button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="platforms" id="platformsHidden"/>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-outline-info fw-bold mt-3">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

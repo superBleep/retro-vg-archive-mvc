@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 public class EmulatorDTO {
+    private Long id;
     private String name;
     private String developer;
     private Date release;
     private List<Long> platformIds;
 
-    public EmulatorDTO(String name, String developer, Date release, List<Long> platformIds) {
+    public EmulatorDTO(Long id, String name, String developer, Date release, List<Long> platformIds) {
+        this.id = id;
         this.name = name;
         this.developer = developer;
         this.release = release;
@@ -17,6 +19,14 @@ public class EmulatorDTO {
     }
 
     public EmulatorDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

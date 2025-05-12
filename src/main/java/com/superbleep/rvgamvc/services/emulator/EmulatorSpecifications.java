@@ -12,24 +12,24 @@ import java.util.List;
 
 public class EmulatorSpecifications {
     public static Specification<Emulator> filterByFields(String name, String developer, String platformName, Integer releaseYear) {
-        return ((root, query, criteriaBuilder) -> {
+        return ((root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-                if (name != null)
-                    predicates.add(criteriaBuilder.equal(root.get("name"), name));
-                if (developer != null)
-                    predicates.add(criteriaBuilder.equal(root.get("developer"), developer));
+                if (name != null && !name.isBlank())
+                    predicates.add(cb.like(cb.lower(root.get("name")), name.toLowerCase() + "%"));
+                if (developer != null && !developer.isBlank())
+                    predicates.add(cb.like(cb.lower(root.get("developer")), developer.toLowerCase() + "%"));
                 if (releaseYear != null) {
-                    Expression<Integer> yearExpression = criteriaBuilder.function(
+                    Expression<Integer> yearExpression = cb.function(
                             "year", Integer.class, root.get("release"));
-                    predicates.add(criteriaBuilder.equal(yearExpression, releaseYear));
+                    predicates.add(cb.equal(yearExpression, releaseYear));
                 }
-                if (platformName != null) {
+                if (platformName != null && !platformName.isBlank()) {
                     Join<Emulator, Platform> join = root.join("platforms");
-                    predicates.add(criteriaBuilder.equal(join.get("name"), platformName));
+                    predicates.add(cb.like(cb.lower(root.get("name")), platformName.toLowerCase() + "%"));
                 }
 
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+                return cb.and(predicates.toArray(new Predicate[0]));
             }
         );
     }
