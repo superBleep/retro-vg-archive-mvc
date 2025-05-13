@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selected = Array
             .from(selectedPlatformsContainer.querySelectorAll('[data-id]'))
             .map(b => b.getAttribute('data-id'));
+
         platformsHiddenInput.value = selected.join(',');
     }
 });

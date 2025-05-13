@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Edit Emulator</title>
+        <title>Add Emulator</title>
         <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
 
@@ -29,14 +29,12 @@
                 <a href="#" th:href="@{/emulators}" class="btn btn-outline-info me-3">
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1 class="m-0 text-info">Edit Emulator</h1>
+                <h1 class="m-0 text-info">Add Emulator</h1>
             </div>
 
             <div id="platformError" class="text-danger fw-bold mb-3" style="display: none;"></div>
 
-            <form method="post" th:action="@{/emulators/update}" th:object="${emulator}" class="row g-3 mb-4">
-                <input type="hidden" name="id" id="id" th:value="*{id}">
-
+            <form method="POST" th:action="@{/emulators/create}" th:object="${emulator}" class="row g-3 mb-4">
                 <div class="col-md-3">
                     <label for="name" class="form-label text-light">Name</label>
                     <input type="text" name="name" id="name" class="form-control bg-dark text-light border-info"
@@ -59,13 +57,13 @@
                     <label class="form-label text-light">Selected Platforms</label>
 
                     <div id="selectedPlatforms" class="mb-2 d-flex flex-wrap gap-2">
-                        <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
-                              th:each="platform : ${platforms}"
-                              th:if="${emulator.platformIds.contains(platform.id)}"
-                              th:attr="data-id=${platform.id}">
-                            <span th:text="${platform.name}" class="me-2"></span>
-                            <i class="fas fa-times cursor-pointer" onclick="removePlatform(this)"></i>
-                        </span>
+                                <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
+                                      th:each="platform : ${platforms}"
+                                      th:if="${emulator.platformIds.contains(platform.id)}"
+                                      th:attr="data-id=${platform.id}">
+                                    <span th:text="${platform.name}" class="me-2"></span>
+                                    <i class="fas fa-times cursor-pointer" onclick="removePlatform(this)"></i>
+                                </span>
                     </div>
                 </div>
 
@@ -85,7 +83,7 @@
                 <input type="hidden" name="platformIdsString" id="platformsHidden"/>
 
                 <div class="col-12">
-                    <button type="submit" class="btn btn-outline-info fw-bold mt-3">Save Changes</button>
+                    <button type="submit" class="btn btn-outline-info fw-bold mt-3">Add Emulator</button>
                 </div>
             </form>
         </div>

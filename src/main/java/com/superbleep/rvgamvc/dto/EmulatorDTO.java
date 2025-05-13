@@ -1,5 +1,7 @@
 package com.superbleep.rvgamvc.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +9,7 @@ public class EmulatorDTO {
     private Long id;
     private String name;
     private String developer;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date release;
     private List<Long> platformIds;
 

@@ -1,21 +1,17 @@
 package com.superbleep.rvgamvc.controllers;
 
+import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Platform;
 import com.superbleep.rvgamvc.dto.EmulatorDTO;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import com.superbleep.rvgamvc.services.emulator.EmulatorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
-@RequestMapping("/emulators")
 public class EmulatorController {
     EmulatorService emulatorService;
     PlatformRepository platformRepository;
@@ -25,8 +21,8 @@ public class EmulatorController {
         this.platformRepository = platformRepository;
     }
 
-    @RequestMapping("")
-    public String emulatorList(@RequestParam(required = false) String name,
+    @RequestMapping(value = "/emulators", method = RequestMethod.GET)
+    public String listAll(@RequestParam(required = false) String name,
         @RequestParam(required = false) String developer, @RequestParam(required = false) String platformName,
         @RequestParam(required = false) Integer releaseYear, Model model) {
         List<EmulatorDTO> emulatorDTOs = emulatorService.findByFilters(name, developer, platformName, releaseYear);
@@ -52,7 +48,31 @@ public class EmulatorController {
         return "emulators";
     }
 
-    @RequestMapping("/edit/{id}")
+    @RequestMapping(value = "/emulators/add", method = RequestMethod.GET)
+    public String add(Model model) {
+        EmulatorDTO emulatorDTO = new EmulatorDTO();
+        emulatorDTO.setPlatformIds(new ArrayList<>());
+        List<Platform> allPlatforms = platformRepository.findAll();
+
+        model.addAttribute("emulator", emulatorDTO);
+        model.addAttribute("platforms", allPlatforms);
+
+        return "addEmulator";
+    }
+
+    @RequestMapping(value = "/emulators/create", method = RequestMethod.POST)
+    public String create(@ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
+        List<Long> platformIds = Arrays.stream(platformIdsString.split(","))
+                .map(Long::parseLong)
+                .toList();
+        emulatorDTO.setPlatformIds(platformIds);
+
+        emulatorService.create(emulatorDTO);
+
+        return "redirect:/emulators";
+    }
+
+    @RequestMapping(value = "/emulators/edit/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
         EmulatorDTO emulatorDTO = emulatorService.findById(id);
         List<Platform> allPlatforms = platformRepository.findAll();
@@ -61,5 +81,17 @@ public class EmulatorController {
         model.addAttribute("platforms", allPlatforms);
 
         return "editEmulator";
+    }
+
+    @RequestMapping(value = "/emulators/update", method = RequestMethod.POST)
+    public String update(@ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
+        List<Long> platformIds = Arrays.stream(platformIdsString.split(","))
+                .map(Long::parseLong)
+                .toList();
+        emulatorDTO.setPlatformIds(platformIds);
+
+        emulatorService.update(emulatorDTO);
+
+        return "redirect:/emulators";
     }
 }

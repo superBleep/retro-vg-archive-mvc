@@ -17,7 +17,7 @@ public class Emulator {
     @Temporal(TemporalType.DATE)
     private Date release;
 
-    @ManyToMany(mappedBy = "emulators", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "emulators")
     private List<Platform> platforms;
 
     public Emulator(Long id, String name, String developer, Date release, List<Platform> platforms) {
