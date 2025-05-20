@@ -39,19 +39,22 @@
 
                 <div class="col-md-3">
                     <label for="name" class="form-label text-light">Name</label>
-                    <input type="text" name="name" id="name" class="form-control bg-dark text-light border-info"
-                           placeholder="Name" th:value="*{name}">
+                    <input type="text" name="name" id="name"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Name" th:value="*{name}" required>
                 </div>
 
                 <div class="col-md-3">
                     <label for="developer" class="form-label text-light">Developer</label>
-                    <input type="text" name="developer" id="developer" class="form-control bg-dark text-light border-info"
-                           placeholder="Developer" th:value="*{developer}">
+                    <input type="text" name="developer" id="developer"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Developer" th:value="*{developer}" required>
                 </div>
 
                 <div class="col-md-2">
                     <label for="release" class="form-label text-light">Release Year</label>
-                    <input type="date" name="release" id="release" class="form-control bg-dark text-light border-info"
+                    <input type="date" name="release" id="release"
+                           class="form-control bg-dark text-light border-info"
                            placeholder="Release Date" th:value="*{release}">
                 </div>
 

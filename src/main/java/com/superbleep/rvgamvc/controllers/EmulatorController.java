@@ -5,15 +5,19 @@ import com.superbleep.rvgamvc.dto.EmulatorDTO;
 import com.superbleep.rvgamvc.filters.EmulatorFilter;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import com.superbleep.rvgamvc.services.emulator.EmulatorService;
+import jakarta.validation.Valid;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class EmulatorController {
@@ -72,7 +76,7 @@ public class EmulatorController {
     }
 
     @RequestMapping(value = "/emulators/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
+    public String create(@Valid @ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
         List<Long> platformIds = Arrays.stream(platformIdsString.split(","))
                 .map(Long::parseLong)
                 .toList();
@@ -95,7 +99,7 @@ public class EmulatorController {
     }
 
     @RequestMapping(value = "/emulators/update", method = RequestMethod.POST)
-    public String update(@ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
+    public String update(@Valid @ModelAttribute EmulatorDTO emulatorDTO, @RequestParam String platformIdsString) {
         List<Long> platformIds = Arrays.stream(platformIdsString.split(","))
                 .map(Long::parseLong)
                 .toList();

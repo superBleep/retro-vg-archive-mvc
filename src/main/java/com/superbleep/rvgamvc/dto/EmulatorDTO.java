@@ -1,5 +1,8 @@
 package com.superbleep.rvgamvc.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -7,10 +10,18 @@ import java.util.List;
 
 public class EmulatorDTO {
     private Long id;
+
+    @NotBlank(message = "Name is required!")
     private String name;
+
+    @NotBlank(message = "Developer is required!")
     private String developer;
+
+    @NotNull(message = "Release date cannot be null!")
+    @PastOrPresent(message = "Release date cannot be in the future!")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date release;
+
     private List<Long> platformIds;
 
     public EmulatorDTO(Long id, String name, String developer, Date release, List<Long> platformIds) {

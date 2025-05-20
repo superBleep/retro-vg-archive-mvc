@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const platformSelect = document.getElementById('platformSelect');
     const platformsHiddenInput = document.getElementById('platformsHidden');
 
+    updateHiddenPlatforms()
+
     const initialSelected = Array
         .from(selectedPlatformsContainer.querySelectorAll('[data-id]'))
         .map(el => el.getAttribute('data-id'));
