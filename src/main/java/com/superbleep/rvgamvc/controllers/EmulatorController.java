@@ -1,10 +1,14 @@
 package com.superbleep.rvgamvc.controllers;
 
-import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Platform;
 import com.superbleep.rvgamvc.dto.EmulatorDTO;
+import com.superbleep.rvgamvc.filters.EmulatorFilter;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import com.superbleep.rvgamvc.services.emulator.EmulatorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +26,19 @@ public class EmulatorController {
     }
 
     @RequestMapping(value = "/emulators", method = RequestMethod.GET)
-    public String listAll(@RequestParam(required = false) String name,
-        @RequestParam(required = false) String developer, @RequestParam(required = false) String platformName,
-        @RequestParam(required = false) Integer releaseYear, Model model) {
-        List<EmulatorDTO> emulatorDTOs = emulatorService.findByFilters(name, developer, platformName, releaseYear);
+    public String listAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            EmulatorFilter filter, Model model
+    ) {
+        Sort sort = Sort.by("name").ascending();
+        Pageable pageable = PageRequest.of(page, 5, sort);
+
+        Page<EmulatorDTO> emulatorPage = emulatorService.findByFilters(filter.getName(), filter.getDeveloper(),
+                filter.getPlatformName(), filter.getReleaseYear(), pageable);
+
         Map<Long, String> platformNames = new HashMap<>();
 
-        emulatorDTOs.forEach(dto -> {
+        emulatorPage.forEach(dto -> {
             List<String> names = platformRepository.findAllById(dto.getPlatformIds())
                     .stream()
                     .map(Platform::getName)
@@ -37,13 +47,11 @@ public class EmulatorController {
             platformNames.put(dto.getId(), String.join(", ", names));
         });
 
-        model.addAttribute("emulators", emulatorDTOs);
+        model.addAttribute("emulatorPage", emulatorPage);
         model.addAttribute("platforms", platformNames);
-
-        model.addAttribute("name", name);
-        model.addAttribute("developer", developer);
-        model.addAttribute("platformName", platformName);
-        model.addAttribute("releaseYear", releaseYear);
+        model.addAttribute("filter", filter);
+        model.addAttribute("curPage", emulatorPage.getNumber());
+        model.addAttribute("totalPages", emulatorPage.getTotalPages());
 
         return "emulators";
     }

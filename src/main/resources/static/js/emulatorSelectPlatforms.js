@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addPlatform = function () {
         const errorDiv = document.getElementById('platformError');
+        
         errorDiv.style.display = "none";
         errorDiv.textContent = "";
 

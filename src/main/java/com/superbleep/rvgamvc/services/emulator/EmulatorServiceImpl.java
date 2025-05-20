@@ -7,12 +7,13 @@ import com.superbleep.rvgamvc.mappers.EmulatorMapper;
 import com.superbleep.rvgamvc.repositories.EmulatorRepository;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmulatorServiceImpl implements EmulatorService {
@@ -77,20 +78,11 @@ public class EmulatorServiceImpl implements EmulatorService {
     }
 
     @Override
-    public List<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear) {
-        List<Emulator> emulators;
+    public Page<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear, Pageable pageable) {
+        Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear);
+        Page<Emulator> page = emulatorRepository.findAll(spec, pageable);
 
-        if (name == null && developer == null & platformName == null && releaseYear == null) {
-            emulators = emulatorRepository.findAll();
-        } else {
-            Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear);
-
-            emulators = emulatorRepository.findAll(spec);
-        }
-
-        return emulators.stream()
-                .map(emulatorMapper::toDto)
-                .collect(Collectors.toList());
+        return page.map(emulatorMapper::toDto);
     }
 
     @Override

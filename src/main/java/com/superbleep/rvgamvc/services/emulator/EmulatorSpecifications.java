@@ -26,7 +26,8 @@ public class EmulatorSpecifications {
                 }
                 if (platformName != null && !platformName.isBlank()) {
                     Join<Emulator, Platform> join = root.join("platforms");
-                    predicates.add(cb.like(cb.lower(root.get("name")), platformName.toLowerCase() + "%"));
+                    predicates.add(cb.like(cb.lower(join.get("name")), platformName.toLowerCase() + "%"));
+                    query.distinct(true);
                 }
 
                 return cb.and(predicates.toArray(new Predicate[0]));

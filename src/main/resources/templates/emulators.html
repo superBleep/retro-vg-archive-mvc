@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Retro Archive</title>
+
         <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
 
@@ -16,6 +17,13 @@
                 color: #dee2e6 !important
             }
         </style>
+
+        <script src="/js/sortTable.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                new SortTable("emulatorTable");
+            });
+        </script>
     </head>
     <body class="bg-dark text-light">
         <div class="container mt-4">
@@ -29,29 +37,29 @@
                 </ul>
             </nav>
 
-            <form th:action="@{/emulators}" method="get" class="row g-3 mb-4">
+            <form th:action="@{/emulators(page=${curPage})}" th:object="${filter}" method="get" class="row g-3 mb-4">
                 <div class="col-md-3">
                     <label for="filterName" class="form-label text-light">Name</label>
                     <input type="text" name="name" id="filterName" class="form-control bg-dark text-light border-info"
-                           placeholder="Name" th:value="${name}">
+                           placeholder="Name" th:value="${filter.name}">
                 </div>
 
                 <div class="col-md-3">
                     <label for="filterDeveloper" class="form-label text-light">Developer</label>
                     <input type="text" name="developer" id="filterDeveloper" class="form-control bg-dark text-light border-info"
-                           placeholder="Developer" th:value="${developer}">
+                           placeholder="Developer" th:value="${filter.developer}">
                 </div>
 
                 <div class="col-md-3">
                     <label for="filterPlatformName" class="form-label text-light">Platform</label>
                     <input type="text" name="platformName" id="filterPlatformName" class="form-control bg-dark text-light border-info"
-                           placeholder="Platform Name" th:value="${platformName}">
+                           placeholder="Platform Name" th:value="${filter.platformName}">
                 </div>
 
                 <div class="col-md-2">
                     <label for="filterReleaseYear" class="form-label text-light">Release Year</label>
                     <input type="number" name="releaseYear" id="filterReleaseYear" class="form-control bg-dark text-light border-info"
-                           placeholder="Release Year" th:value="${releaseYear}">
+                           placeholder="Release Year" th:value="${filter.releaseYear}">
                 </div>
 
                 <div class="col-md-1 d-flex align-items-end">
@@ -60,21 +68,21 @@
             </form>
 
             <div class="table-responsive">
-                <table class="table table-dark table-striped table-bordered table-hover align-middle text-center">
+                <table id="emulatorTable" class="table table-dark table-striped table-bordered table-hover align-middle text-center">
                     <thead class="bg-secondary text-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Developer</th>
-                            <th>Release</th>
-                            <th>Platforms</th>
+                            <th data-sortable="true">Name </th>
+                            <th data-sortable="true">Developer </th>
+                            <th data-sortable="true">Release </th>
+                            <th data-sortable="true">Platforms </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="emulator : ${emulators}">
+                        <tr th:each="emulator : ${emulatorPage.content}">
                             <td th:text="${emulator.name}"></td>
                             <td th:text="${emulator.developer}"></td>
-                            <td th:text="${#dates.format(emulator.release, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${#dates.format(emulator.release, 'MMM dd, yyyy')}"></td>
                             <td th:text="${platforms[emulator.id]}"></td>
                             <td><a href="#" th:href="@{'/emulators/edit/' + ${emulator.id}}"><i class="fa-solid fa-pen"></i></a></td>
                         </tr>
@@ -84,6 +92,32 @@
 
             <div class="d-flex justify-content-end">
                 <a href="#" th:href="@{/emulators/add}" class="btn btn-outline-info fw-bold mt-3">Add Emulator</a>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <nav th:if="${emulatorPage.totalPages > 0}">
+                    <ul class="pagination pagination-sm">
+                        <li class="page-item" th:if="${!emulatorPage.first}">
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${curPage - 1})}">
+                                Prev
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, emulatorPage.totalPages - 1)}"
+                            th:classappend="${i == curPage} ? 'active'">
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${i})}"
+                               th:text="${i + 1}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:if="${!emulatorPage.last}">
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${curPage + 1})}">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </body>
