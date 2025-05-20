@@ -25,7 +25,7 @@
         <script src="/js/sortTable.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                new SortTable("emulatorTable");
+                new SortTable("platformTable");
             });
         </script>
     </head>
@@ -36,15 +36,15 @@
             <nav class="navbar navbar-expand mb-4 px-3" style="border-bottom: 2px solid #17a2b8;">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link text-info" href="#" th:href="@{/emulators}">Emulators</a>
+                        <a class="nav-link active text-info" href="#" th:href="@{/emulators}">Emulators</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-info" href="#" th:href="@{/platforms}">Platforms</a>
+                        <a class="nav-link text-info" href="#" th:href="@{/platforms}">Platforms</a>
                     </li>
                 </ul>
             </nav>
 
-            <form th:action="@{/emulators(page=${curPage})}" th:object="${filter}" method="get" class="row g-3 mb-4">
+            <form th:action="@{/platforms(page=${curPage})}" th:object="${filter}" method="get" class="row g-3 mb-4">
                 <div class="col-md-3">
                     <label for="filterName" class="form-label text-light">Name</label>
                     <input type="text" name="name" id="filterName" class="form-control bg-dark text-light border-info"
@@ -52,15 +52,9 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="filterDeveloper" class="form-label text-light">Developer</label>
-                    <input type="text" name="developer" id="filterDeveloper" class="form-control bg-dark text-light border-info"
-                           placeholder="Developer" th:value="${filter.developer}">
-                </div>
-
-                <div class="col-md-3">
-                    <label for="filterPlatformName" class="form-label text-light">Platform</label>
-                    <input type="text" name="platformName" id="filterPlatformName" class="form-control bg-dark text-light border-info"
-                           placeholder="Platform Name" th:value="${filter.platformName}">
+                    <label for="filterManufacturer" class="form-label text-light">Manufacturer</label>
+                    <input type="text" name="manufacturer" id="filterManufacturer" class="form-control bg-dark text-light border-info"
+                           placeholder="Manufacturer" th:value="${filter.manufacturer}">
                 </div>
 
                 <div class="col-md-2">
@@ -75,53 +69,47 @@
             </form>
 
             <div class="table-responsive">
-                <table id="emulatorTable" class="table table-dark table-striped table-bordered table-hover align-middle text-center">
+                <table id="platformTable" class="table table-dark table-striped table-bordered table-hover align-middle text-center">
                     <thead class="bg-secondary text-dark">
                         <tr>
                             <th data-sortable="true">Name </th>
-                            <th data-sortable="true">Developer </th>
+                            <th data-sortable="true">Manufacturer </th>
                             <th data-sortable="true">Release </th>
-                            <th data-sortable="true">Platforms </th>
-                            <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="emulator : ${emulatorPage.content}">
-                            <td th:text="${emulator.name}"></td>
-                            <td th:text="${emulator.developer}"></td>
-                            <td th:text="${#dates.format(emulator.release, 'MMM dd, yyyy')}"></td>
-                            <td th:text="${platforms[emulator.id]}"></td>
-                            <td><a href="#" th:href="@{'/emulators/edit/' + ${emulator.id}}"><i class="fa-solid fa-pen"></i></a></td>
-                            <td><a href="#" th:href="@{'/emulators/remove/' + ${emulator.id}}"><i class="fa-solid fa-trash"></i></a></td>
+                        <tr th:each="platform : ${platformPage.content}">
+                            <td th:text="${platform.name}"></td>
+                            <td th:text="${platform.manufacturer}"></td>
+                            <td th:text="${#dates.format(platform.release, 'MMM dd, yyyy')}"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="d-flex justify-content-end">
-                <a href="#" th:href="@{/emulators/add}" class="btn btn-outline-info fw-bold mt-3">Add Emulator</a>
+                <a href="#" th:href="@{/platforms/add}" class="btn btn-outline-info fw-bold mt-3">Add Platform</a>
             </div>
 
             <div class="d-flex justify-content-center mt-4">
-                <nav th:if="${emulatorPage.totalPages > 0}">
+                <nav th:if="${totalPages > 0}">
                     <ul class="pagination pagination-sm">
-                        <li class="page-item" th:if="${!emulatorPage.first}">
-                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${curPage - 1})}">
+                        <li class="page-item" th:if="${!platformPage.first}">
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/platforms(page=${curPage - 1})}">
                                 Prev
                             </a>
                         </li>
 
                         <li class="page-item"
-                            th:each="i : ${#numbers.sequence(0, emulatorPage.totalPages - 1)}"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == curPage} ? 'active'">
-                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${i})}"
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/platforms(page=${i})}"
                                th:text="${i + 1}">
                             </a>
                         </li>
 
-                        <li class="page-item" th:if="${!emulatorPage.last}">
-                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/emulators(page=${curPage + 1})}">
+                        <li class="page-item" th:if="${!platformPage.last}">
+                            <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/platforms(page=${curPage + 1})}">
                                 Next
                             </a>
                         </li>
