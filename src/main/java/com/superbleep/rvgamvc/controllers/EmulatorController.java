@@ -58,9 +58,12 @@ public class EmulatorController {
 
     @RequestMapping(value = "/emulators/add", method = RequestMethod.GET)
     public String add(Model model) {
-        EmulatorDTO emulatorDTO = new EmulatorDTO();
-        emulatorDTO.setPlatformIds(new ArrayList<>());
         List<Platform> allPlatforms = platformRepository.findAll();
+        List<Long> startIds = new ArrayList<>();
+        startIds.add(allPlatforms.getFirst().getId());
+
+        EmulatorDTO emulatorDTO = new EmulatorDTO();
+        emulatorDTO.setPlatformIds(startIds);
 
         model.addAttribute("emulator", emulatorDTO);
         model.addAttribute("platforms", allPlatforms);
@@ -99,6 +102,28 @@ public class EmulatorController {
         emulatorDTO.setPlatformIds(platformIds);
 
         emulatorService.update(emulatorDTO);
+
+        return "redirect:/emulators";
+    }
+
+    @RequestMapping(value = "/emulators/remove/{id}", method = RequestMethod.GET)
+    public String remove(@PathVariable Long id, Model model) {
+        EmulatorDTO emulatorDTO = emulatorService.findById(id);
+        List<String> platformNames = platformRepository
+                .findAllById(emulatorDTO.getPlatformIds())
+                .stream()
+                .map(Platform::getName)
+                .toList();
+
+        model.addAttribute("emulator", emulatorDTO);
+        model.addAttribute("platformNames", String.join(", ", platformNames));
+
+        return "removeEmulator";
+    }
+
+    @RequestMapping(value = "/emulators/delete", method = RequestMethod.POST)
+    public String delete(@RequestParam Long id) {
+        emulatorService.deleteById(id);
 
         return "redirect:/emulators";
     }

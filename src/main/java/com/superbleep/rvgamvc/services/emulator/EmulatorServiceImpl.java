@@ -60,9 +60,7 @@ public class EmulatorServiceImpl implements EmulatorService {
 
         Emulator savedEmulator = save(emulatorDTO);
 
-        platformRepository.findAllById(platformIds).forEach(platform -> {
-            platform.getEmulators().add(savedEmulator);
-        });
+        platformRepository.findAllById(platformIds).forEach(platform -> platform.getEmulators().add(savedEmulator));
 
         return emulatorMapper.toDto(savedEmulator);
     }
@@ -117,9 +115,20 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public void deleteById(Long id) {
-        if (!emulatorRepository.existsById(id))
-            throw new RuntimeException("Emulator not found!");
+        Optional<Emulator> emulatorOptional = emulatorRepository.findById(id);
 
-        emulatorRepository.deleteById(id);
+        if (emulatorOptional.isEmpty())
+            throw new RuntimeException("Emulator not found!");
+        else {
+            Emulator emulator = emulatorOptional.get();
+
+            platformRepository.findAllByEmulatorId(id).forEach(platform -> {
+                platform.getEmulators().remove(emulator);
+
+                platformRepository.save(platform);
+            });
+
+            emulatorRepository.deleteById(id);
+        }
     }
 }
