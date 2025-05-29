@@ -61,6 +61,8 @@
                             <th data-sortable="true">Name </th>
                             <th data-sortable="true">Manufacturer </th>
                             <th data-sortable="true">Release </th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,6 +70,8 @@
                             <td th:text="${platform.name}"></td>
                             <td th:text="${platform.manufacturer}"></td>
                             <td th:text="${#dates.format(platform.release, 'MMM dd, yyyy')}"></td>
+                            <td><a href="#" th:href="@{'/platforms/edit/' + ${platform.id}}"><i class="fa-solid fa-pen"></i></a></td>
+                            <td><a href="#" th:href="@{'/platforms/remove/' + ${platform.id}}"><i class="fa-solid fa-trash"></i></a></td>
                         </tr>
                     </tbody>
                 </table>

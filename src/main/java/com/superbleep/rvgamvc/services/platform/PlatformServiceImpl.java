@@ -3,7 +3,6 @@ package com.superbleep.rvgamvc.services.platform;
 import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Game;
 import com.superbleep.rvgamvc.domain.Platform;
-import com.superbleep.rvgamvc.dto.EmulatorDTO;
 import com.superbleep.rvgamvc.dto.PlatformDTO;
 import com.superbleep.rvgamvc.mappers.PlatformMapper;
 import com.superbleep.rvgamvc.repositories.EmulatorRepository;
@@ -93,11 +92,25 @@ public class PlatformServiceImpl implements PlatformService {
     }
 
     @Override
+    public List<PlatformDTO> findAllById(List<Long> ids) {
+        List<Platform> platforms = platformRepository.findAllById(ids);
+
+        return platforms.stream().map(platformMapper::toDto).toList();
+    }
+
+    @Override
     public Page<PlatformDTO> findByFilters(String name, String manufacturer, Integer releaseYear, Pageable pageable) {
         Specification<Platform> spec = PlatformSpecifications.filterByFields(name, manufacturer, releaseYear);
         Page<Platform> page = platformRepository.findAll(spec, pageable);
 
         return page.map(platformMapper::toDto);
+    }
+
+    @Override
+    public List<PlatformDTO> findAll() {
+        List<Platform> platforms = platformRepository.findAll();
+
+        return platforms.stream().map(platformMapper::toDto).toList();
     }
 
     @Override

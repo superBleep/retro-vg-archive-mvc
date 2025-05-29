@@ -20,7 +20,7 @@ public class Platform {
     @OneToMany(mappedBy = "platform", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Game> games;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "emulator_platform",
             joinColumns = @JoinColumn(name = "emulator_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "platform_id", referencedColumnName = "id"))

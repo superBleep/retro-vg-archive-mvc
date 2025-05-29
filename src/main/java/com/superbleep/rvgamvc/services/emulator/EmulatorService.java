@@ -9,7 +9,9 @@ import java.util.List;
 public interface EmulatorService {
     EmulatorDTO create(EmulatorDTO emulatorDto);
     EmulatorDTO findById(Long id);
+    List<EmulatorDTO> findAllById(List<Long> id);
     Page<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear, Pageable pageable);
+    List<EmulatorDTO> findAll();
     EmulatorDTO update(EmulatorDTO emulatorDTO);
     void deleteById(Long id);
 }

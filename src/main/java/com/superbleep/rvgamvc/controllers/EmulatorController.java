@@ -1,10 +1,10 @@
 package com.superbleep.rvgamvc.controllers;
 
-import com.superbleep.rvgamvc.domain.Platform;
 import com.superbleep.rvgamvc.dto.EmulatorDTO;
+import com.superbleep.rvgamvc.dto.PlatformDTO;
 import com.superbleep.rvgamvc.filters.EmulatorFilter;
-import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import com.superbleep.rvgamvc.services.emulator.EmulatorService;
+import com.superbleep.rvgamvc.services.platform.PlatformService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,11 +19,11 @@ import java.util.*;
 @Controller
 public class EmulatorController {
     EmulatorService emulatorService;
-    PlatformRepository platformRepository;
+    PlatformService platformService;
 
-    public EmulatorController(EmulatorService emulatorService, PlatformRepository platformRepository) {
+    public EmulatorController(EmulatorService emulatorService, PlatformService platformService) {
         this.emulatorService = emulatorService;
-        this.platformRepository = platformRepository;
+        this.platformService = platformService;
     }
 
     @RequestMapping(value = {"/", "/emulators"}, method = RequestMethod.GET)
@@ -40,9 +40,9 @@ public class EmulatorController {
         Map<Long, String> platformNames = new HashMap<>();
 
         emulatorPage.forEach(dto -> {
-            List<String> names = platformRepository.findAllById(dto.getPlatformIds())
+            List<String> names = platformService.findAllById(dto.getPlatformIds())
                     .stream()
-                    .map(Platform::getName)
+                    .map(PlatformDTO::getName)
                     .toList();
 
             platformNames.put(dto.getId(), String.join(", ", names));
@@ -59,7 +59,7 @@ public class EmulatorController {
 
     @RequestMapping(value = "/emulators/add", method = RequestMethod.GET)
     public String add(Model model) {
-        List<Platform> allPlatforms = platformRepository.findAll();
+        List<PlatformDTO> allPlatforms = platformService.findAll();
         List<Long> startIds = new ArrayList<>();
         startIds.add(allPlatforms.getFirst().getId());
 
@@ -87,7 +87,7 @@ public class EmulatorController {
     @RequestMapping(value = "/emulators/edit/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
         EmulatorDTO emulatorDTO = emulatorService.findById(id);
-        List<Platform> allPlatforms = platformRepository.findAll();
+        List<PlatformDTO> allPlatforms = platformService.findAll();
 
         model.addAttribute("emulator", emulatorDTO);
         model.addAttribute("platforms", allPlatforms);
@@ -110,10 +110,10 @@ public class EmulatorController {
     @RequestMapping(value = "/emulators/remove/{id}", method = RequestMethod.GET)
     public String remove(@PathVariable Long id, Model model) {
         EmulatorDTO emulatorDTO = emulatorService.findById(id);
-        List<String> platformNames = platformRepository
+        List<String> platformNames = platformService
                 .findAllById(emulatorDTO.getPlatformIds())
                 .stream()
-                .map(Platform::getName)
+                .map(PlatformDTO::getName)
                 .toList();
 
         model.addAttribute("emulator", emulatorDTO);

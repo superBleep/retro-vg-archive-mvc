@@ -76,11 +76,25 @@ public class EmulatorServiceImpl implements EmulatorService {
     }
 
     @Override
+    public List<EmulatorDTO> findAllById(List<Long> ids) {
+        List<Emulator> emulators = emulatorRepository.findAllById(ids);
+
+        return emulators.stream().map(emulatorMapper::toDto).toList();
+    }
+
+    @Override
     public Page<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear, Pageable pageable) {
         Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear);
         Page<Emulator> page = emulatorRepository.findAll(spec, pageable);
 
         return page.map(emulatorMapper::toDto);
+    }
+
+    @Override
+    public List<EmulatorDTO> findAll() {
+        List<Emulator> emulators = emulatorRepository.findAll();
+
+        return emulators.stream().map(emulatorMapper::toDto).toList();
     }
 
     @Override
