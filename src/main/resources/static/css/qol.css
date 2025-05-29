@@ -1,0 +1,12 @@
+.form-control::placeholder {
+    color: #FFFFFF !important;
+    opacity: 1;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+i.fa-trash {
+    color: red; !important
+}

@@ -2,7 +2,6 @@ package com.superbleep.rvgamvc.advice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +21,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList()));
-        modelAndView.addObject("referer", referer != null ? referer : "/emulators");
+        modelAndView.addObject("referer", referer != null ? referer : "/");
 
         return modelAndView;
     }
@@ -34,7 +33,7 @@ public class GlobalExceptionHandler {
         ModelAndView modelAndView = new ModelAndView("error");
 
         modelAndView.addObject("messages", e.getMessage());
-        modelAndView.addObject("referer", referer != null ? referer : "/emulators");
+        modelAndView.addObject("referer", referer != null ? referer : "/");
 
         return modelAndView;
     }

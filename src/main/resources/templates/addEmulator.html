@@ -3,25 +3,23 @@
     <head>
         <meta charset="UTF-8">
         <title>Add Emulator</title>
+
         <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/qol.css"/>
 
-        <script src="/js/emulatorSelectPlatforms.js"></script>
-
-        <style>
-            ::placeholder {
-                color: #ced4da !important;
-                opacity: 1;
-            }
-
-            input.form-control::placeholder {
-                color: #dee2e6 !important
-            }
-
-            .cursor-pointer {
-                cursor: pointer;
-            }
-        </style>
+        <script src="/js/selectWithBadges.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                selectWithBadges({
+                    containerId: 'selectedPlatforms',
+                    selectorId: 'platformSelect',
+                    hiddenStringId: 'platformsHidden',
+                    funcSuffix: 'platform',
+                    minOne: true
+                });
+            });
+        </script>
     </head>
     <body class="bg-dark text-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="container">
@@ -32,7 +30,7 @@
                 <h1 class="m-0 text-info">Add Emulator</h1>
             </div>
 
-            <div id="platformError" class="text-danger fw-bold mb-3" style="display: none;"></div>
+            <div id="errorDiv" class="text-danger fw-bold mb-3" style="display: none;"></div>
 
             <form method="POST" th:action="@{/emulators/create}" th:object="${emulator}" class="row g-3 mb-4">
                 <div class="col-md-3">
@@ -53,20 +51,20 @@
                     <label for="release" class="form-label text-light">Release Year</label>
                     <input type="date" name="release" id="release"
                            class="form-control bg-dark text-light border-info"
-                           placeholder="Release Date" th:value="*{release}">
+                           placeholder="Release Year" th:value="*{release}">
                 </div>
 
                 <div class="col-md-12">
                     <label class="form-label text-light">Selected Platforms</label>
 
                     <div id="selectedPlatforms" class="mb-2 d-flex flex-wrap gap-2">
-                                <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
-                                      th:each="platform : ${platforms}"
-                                      th:if="${emulator.platformIds.contains(platform.id)}"
-                                      th:attr="data-id=${platform.id}">
-                                    <span th:text="${platform.name}" class="me-2"></span>
-                                    <i class="fas fa-times cursor-pointer" onclick="removePlatform(this)"></i>
-                                </span>
+                        <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
+                              th:each="platform : ${platforms}"
+                              th:if="${emulator.platformIds.contains(platform.id)}"
+                              th:attr="data-id=${platform.id}">
+                            <span th:text="${platform.name}" class="me-2"></span>
+                            <i class="fas fa-times cursor-pointer" onclick="remove_platform(this)"></i>
+                        </span>
                     </div>
                 </div>
 
@@ -79,7 +77,7 @@
                                     th:value="${platform.id}"
                                     th:text="${platform.name}"></option>
                         </select>
-                        <button type="button" class="btn btn-outline-info" onclick="addPlatform()">Add</button>
+                        <button type="button" class="btn btn-outline-info" onclick="add_platform()">Add</button>
                     </div>
                 </div>
 

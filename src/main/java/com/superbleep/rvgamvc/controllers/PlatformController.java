@@ -56,16 +56,23 @@ public class PlatformController {
 
     @RequestMapping(value = "/platforms/add", method = RequestMethod.GET)
     public String add(Model model) {
-        List<Emulator> emulators = emulatorRepository.findAll();
-        List<Game> games = gameRepository.findAll();
+        List<Emulator> allEmulators = emulatorRepository.findAll();
+        List<Game> allGames = gameRepository.findAll();
+
+        List<Long> startEmulatorIds = new ArrayList<>();
+        startEmulatorIds.add(allEmulators.getFirst().getId());
+
+        List<Long> startGameIds = new ArrayList<>();
+        startGameIds.add(allGames.getFirst().getId());
 
         PlatformDTO platformDTO = new PlatformDTO();
-        platformDTO.setEmulatorIds(new ArrayList<>());
-        platformDTO.setGameIds(new ArrayList<>());
+
+        platformDTO.setEmulatorIds(startEmulatorIds);
+        platformDTO.setGameIds(startGameIds);
 
         model.addAttribute("platform", platformDTO);
-        model.addAttribute("emulators", emulators);
-        model.addAttribute("games", games);
+        model.addAttribute("emulators", allEmulators);
+        model.addAttribute("games", allGames);
 
         return "addPlatform";
     }
@@ -88,6 +95,8 @@ public class PlatformController {
 
             platformDTO.setGameIds(gameIds);
         }
+
+        platformService.create(platformDTO);
 
         return "redirect:/platforms";
     }

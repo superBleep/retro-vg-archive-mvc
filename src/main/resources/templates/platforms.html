@@ -2,25 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Retro Archive</title>
+        <title>Platforms</title>
 
         <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
-
-        <style>
-            ::placeholder {
-                color: #ced4da !important;
-                opacity: 1;
-            }
-
-            input.form-control::placeholder {
-                color: #dee2e6 !important
-            }
-
-            i.fa-trash {
-                color: red; !important
-            }
-        </style>
+        <link rel="stylesheet" href="/css/qol.css"/>
 
         <script src="/js/sortTable.js"></script>
         <script>
@@ -31,15 +17,15 @@
     </head>
     <body class="bg-dark text-light">
         <div class="container mt-4">
-            <h1 class="text-center mb-4 text-info">Retro Archive</h1>
+            <h1 class="text-center mb-4 text-info">Retro Video Game Archive</h1>
 
             <nav class="navbar navbar-expand mb-4 px-3" style="border-bottom: 2px solid #17a2b8;">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active text-info" href="#" th:href="@{/emulators}">Emulators</a>
+                        <a class="nav-link text-white" href="#" th:href="@{/emulators}">Emulators</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-info" href="#" th:href="@{/platforms}">Platforms</a>
+                        <a class="nav-link text-info fw-bold" href="#" th:href="@{/platforms}">Platforms</a>
                     </li>
                 </ul>
             </nav>
@@ -102,7 +88,7 @@
 
                         <li class="page-item"
                             th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:classappend="${i == curPage} ? 'active'">
+                            th:classappend="${i == curPage} ? 'text-white'">
                             <a class="page-link bg-dark fw-bold text-info border-info" th:href="@{/platforms(page=${i})}"
                                th:text="${i + 1}">
                             </a>

@@ -6,18 +6,15 @@ import com.superbleep.rvgamvc.filters.EmulatorFilter;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import com.superbleep.rvgamvc.services.emulator.EmulatorService;
 import jakarta.validation.Valid;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class EmulatorController {
@@ -29,7 +26,7 @@ public class EmulatorController {
         this.platformRepository = platformRepository;
     }
 
-    @RequestMapping(value = "/emulators", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/emulators"}, method = RequestMethod.GET)
     public String listAll(
             @RequestParam(defaultValue = "0") Integer page,
             EmulatorFilter filter, Model model

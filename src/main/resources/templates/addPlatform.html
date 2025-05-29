@@ -3,40 +3,30 @@
     <head>
         <meta charset="UTF-8">
         <title>Add Emulator</title>
+
         <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/qol.css"/>
 
-        <script src="/js/setupSelectableCollection.js"></script>
+        <script src="/js/selectWithBadges.js"></script>
         <script>
-            setupSelectableCollection({
-                containerId: 'selectedEmulators',
-                selectId: 'emulatorSelect',
-                hiddenInputId: 'emulatorsHidden',
-                minSelected: 0
-            });
-
-            setupSelectableCollection({
-                containerId: 'selectedGames',
-                selectId: 'gameSelect',
-                hiddenInputId: 'gamesHidden',
-                minSelected: 0
+            document.addEventListener("DOMContentLoaded", function () {
+                selectWithBadges({
+                    containerId: 'selectedEmulators',
+                    selectorId: 'emulatorSelect',
+                    hiddenStringId: 'emulatorsHidden',
+                    funcSuffix: 'emulator',
+                    minOne: true
+                });
+                selectWithBadges({
+                    containerId: 'selectedGames',
+                    selectorId: 'gameSelect',
+                    hiddenStringId: 'gamesHidden',
+                    funcSuffix: 'game',
+                    minOne: true
+                });
             });
         </script>
-
-        <style>
-            ::placeholder {
-                color: #ced4da !important;
-                opacity: 1;
-            }
-
-            input.form-control::placeholder {
-                color: #dee2e6 !important
-            }
-
-            .cursor-pointer {
-                cursor: pointer;
-            }
-        </style>
     </head>
     <body class="bg-dark text-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="container">
@@ -46,6 +36,8 @@
                 </a>
                 <h1 class="m-0 text-info">Add Platform</h1>
             </div>
+
+            <div id="errorDiv" class="text-danger fw-bold mb-3" style="display: none;"></div>
 
             <form method="POST" th:action="@{/platforms/create}" th:object="${platform}" class="row g-3 mb-4">
                 <div class="col-md-3">
@@ -69,69 +61,60 @@
                            placeholder="Release Date" th:value="*{release}">
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="col-md-12">
-                            <label class="form-label text-light">Selected Emulators</label>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <label class="form-label text-light">Selected Emulators</label>
 
-                            <div id="selectedEmulators" class="mb-2 d-flex flex-wrap gap-2">
-                                        <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
-                                              th:each="emulator : ${emulators}"
-                                              th:if="${platform.emulatorIds.contains(emulator.id)}"
-                                              th:attr="data-id=${emulator.id}">
-                                            <span th:text="${emulator.name}" class="me-2"></span>
-                                            <i class="fas fa-times cursor-pointer" onclick="removeFrom_selectedEmulators(this)"></i>
-                                        </span>
-                            </div>
+                        <div id="selectedEmulators" class="mb-2 d-flex flex-wrap gap-2">
+                            <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
+                                  th:each="emulator : ${emulators}"
+                                  th:if="${platform.emulatorIds.contains(emulator.id)}"
+                                  th:attr="data-id=${emulator.id}">
+                                <span th:text="${emulator.name}" class="me-2"></span>
+                                <i class="fas fa-times cursor-pointer" onclick="remove_emulator(this)"></i>
+                            </span>
                         </div>
 
-                        <div class="col-md-6 col-lg-4">
-                            <label for="emulatorSelect" class="form-label text-light">Add Emulator</label>
+                        <label for="emulatorSelect" class="form-label text-light mt-4">Add Emulator</label>
 
-                            <div class="input-group">
-                                <select id="emulatorSelect" class="form-select bg-dark text-light border-info">
-                                    <option th:each="emulator : ${emulators}"
-                                            th:value="${emulator.id}"
-                                            th:text="${emulator.name}"></option>
-                                </select>
-                                <button type="button" class="btn btn-outline-info" onclick="addTo_selectedEmulators()">Add</button>
-                            </div>
+                        <div class="input-group">
+                            <select id="emulatorSelect" class="form-select bg-dark text-light border-info">
+                                <option th:each="emulator : ${emulators}"
+                                        th:value="${emulator.id}"
+                                        th:text="${emulator.name}"></option>
+                            </select>
+                            <button type="button" class="btn btn-outline-info" onclick="add_emulator()">Add</button>
                         </div>
-
-                        <input type="hidden" name="emulatorIdsString" id="emulatorsHidden"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="col-md-6">
-                            <div class="col-md-12">
-                                <label class="form-label text-light">Selected Games</label>
 
-                                <div id="selectedGames" class="mb-2 d-flex flex-wrap gap-2">
-                                        <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
-                                              th:each="game : ${games}"
-                                              th:if="${platform.gameIds.contains(game.id)}"
-                                              th:attr="data-id=${game.id}">
-                                            <span th:text="${game.title}" class="me-2"></span>
-                                            <i class="fas fa-times cursor-pointer" onclick="removeFrom_selectedGames(this)"></i>
-                                        </span>
-                                </div>
-                            </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-light">Selected Games</label>
 
-                            <div class="col-md-6 col-lg-4">
-                                <label for="emulatorSelect" class="form-label text-light">Add Game</label>
+                        <div id="selectedGames" class="mb-2 d-flex flex-wrap gap-2">
+                            <span class="badge bg-info text-dark fs-6 px-3 py-2 d-flex align-items-center"
+                                  th:each="game : ${games}"
+                                  th:if="${platform.gameIds.contains(game.id)}"
+                                  th:attr="data-id=${game.id}">
+                                <span th:text="${game.title}" class="me-2"></span>
+                                <i class="fas fa-times cursor-pointer" onclick="remove_game(this)"></i>
+                            </span>
+                        </div>
 
-                                <div class="input-group">
-                                    <select id="gameSelect" class="form-select bg-dark text-light border-info">
-                                        <option th:each="game : ${games}"
-                                                th:value="${game.id}"
-                                                th:text="${game.title}"></option>
-                                    </select>
-                                    <button type="button" class="btn btn-outline-info" onclick="addTo_selectedGames()">Add</button>
-                                </div>
-                            </div>
+                        <label for="gameSelect" class="form-label text-light mt-4">Add Game</label>
 
-                            <input type="hidden" name="gameIdsString" id="gamesHidden"/>
+                        <div class="input-group">
+                            <select id="gameSelect" class="form-select bg-dark text-light border-info">
+                                <option th:each="game : ${games}"
+                                        th:value="${game.id}"
+                                        th:text="${game.title}"></option>
+                            </select>
+                            <button type="button" class="btn btn-outline-info" onclick="add_game()">Add</button>
+                        </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="emulatorIdsString" id="emulatorsHidden"/>
+                <input type="hidden" name="gameIdsString" id="gamesHidden"/>
 
                 <div class="col-12">
                     <button type="submit" class="btn btn-outline-info fw-bold mt-3">Add Platform</button>
