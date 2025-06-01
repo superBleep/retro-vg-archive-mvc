@@ -9,18 +9,10 @@ import java.util.List;
 
 public interface GameVersionRepository extends JpaRepository<GameVersion, GameVersionId> {
     @Query("""
-        SELECT gv
+        SELECT g
         FROM GameVersion gv
         JOIN gv.game g
-        WHERE g.title = ?1
+        WHERE g.id = :id
     """)
-    List<GameVersion> findByGameTitle(String title);
-
-    @Query("""
-        SELECT gv
-        FROM GameVersion gv
-        JOIN gv.game g
-        WHERE g.title = ?1 AND YEAR(gv.release) = ?2
-    """)
-    List<GameVersion> findByGameTitleAndReleaseYear(String title, Integer year);
+    List<GameVersion> findAllByGameId(Long id);
 }

@@ -1,7 +1,10 @@
 package com.superbleep.rvgamvc.dto;
 
-import com.superbleep.rvgamvc.domain.Platform;
+import com.superbleep.rvgamvc.domain.GameVersionId;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 public class GameDTO {
     private Long id;
@@ -18,18 +21,20 @@ public class GameDTO {
     @NotBlank(message = "Genre is required!")
     private String genre;
 
-    private Platform platform;
+    @NotNull
+    private Long platformId;
 
-    public GameDTO(Long id, String title, String developer, String publisher, String genre, Platform platform) {
+    private List<GameVersionId> GameVersionIds;
+
+    public GameDTO(Long id, String title, String developer, String publisher, String genre, Long platformId,
+                   List<GameVersionId> gameVersionIds) {
         this.id = id;
         this.title = title;
         this.developer = developer;
         this.publisher = publisher;
         this.genre = genre;
-        this.platform = platform;
-    }
-
-    public GameDTO() {
+        this.platformId = platformId;
+        GameVersionIds = gameVersionIds;
     }
 
     public Long getId() {
@@ -72,11 +77,19 @@ public class GameDTO {
         this.genre = genre;
     }
 
-    public Platform getPlatform() {
-        return platform;
+    public Long getPlatformId() {
+        return platformId;
     }
 
-    public void setPlatform(Platform platform) {
-        this.platform = platform;
+    public void setPlatformId(Long platformId) {
+        this.platformId = platformId;
+    }
+
+    public List<GameVersionId> getGameVersionIds() {
+        return GameVersionIds;
+    }
+
+    public void setGameVersionIds(List<GameVersionId> gameVersionIds) {
+        GameVersionIds = gameVersionIds;
     }
 }

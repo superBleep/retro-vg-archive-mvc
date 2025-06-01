@@ -17,4 +17,12 @@ public interface PlatformRepository extends JpaRepository<Platform, Long>, JpaSp
         WHERE e.id = :id
     """)
     List<Platform> findAllByEmulatorId(Long id);
+
+    @Query("""
+        SELECT p
+        FROM Platform p
+        JOIN p.games g
+        WHERE g.id = :id
+    """)
+    Platform findByGameId(Long id);
 }
