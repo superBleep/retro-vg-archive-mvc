@@ -1,9 +1,7 @@
 package com.superbleep.rvgamvc.services.game;
 
-import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Game;
 import com.superbleep.rvgamvc.domain.Platform;
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,7 +23,7 @@ public class GameSpecifications {
             if (genre != null && !genre.isBlank())
                 predicates.add(cb.like(cb.lower(root.get("genre")), genre.toLowerCase() + "%"));
             if (platformName != null && !platformName.isBlank()) {
-                Join<Emulator, Platform> join = root.join("platforms");
+                Join<Game, Platform> join = root.join("platform");
                 predicates.add(cb.like(cb.lower(join.get("name")), platformName.toLowerCase() + "%"));
                 query.distinct(true);
             }

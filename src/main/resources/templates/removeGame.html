@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Delete Game</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" hidden="/css/qol.css"/>
+
+        <style>
+            p {
+                color: #ced4da !important;
+                opacity: 1;
+            }
+        </style>
+    </head>
+
+    <body class="bg-dark text-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <div class="d-flex align-items-center mb-4">
+                <a th:href="@{/games}" class="btn btn-outline-info me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="m-0 text-info">Confirm Deletion</h1>
+            </div>
+
+            <div class="card bg-secondary bg-opacity-10 border-info mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-info" th:text="${game.title}">Game Title</h4>
+                    <p class="mb-1">
+                        <strong>Developer:</strong>
+                        <span th:text="${game.developer}"></span>
+                    </p>
+                    <p class="mb-1">
+                        <strong>Publisher:</strong>
+                        <span th:text="${game.publisher}"></span>
+                    </p>
+                    <p class="mb-1">
+                        <strong>Genre:</strong>
+                        <span th:text="${game.genre}"></span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Platform:</strong>
+                        <span th:text="${platformName}"></span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Versions:</strong>
+                        <span th:text="${gameVersionIds}"></span>
+                    </p>
+                </div>
+            </div>
+
+            <form th:action="@{/games/delete}" method="post" class="d-inline">
+                <input type="hidden" name="id" th:value="${game.id}"/>
+
+                <button type="submit" class="btn btn-danger fw-bold me-2">
+                    <i class="fas fa-trash me-1"></i> Delete
+                </button>
+            </form>
+
+            <a th:href="@{/games}" class="btn btn-outline-info fw-bold">
+                Cancel
+            </a>
+        </div>
+    </body>
+</html>

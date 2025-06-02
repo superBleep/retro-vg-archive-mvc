@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add Game</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/qol.css"/>
+    </head>
+    <body class="bg-dark text-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-start mb-4">
+                <a href="#" th:href="@{/games}" class="btn btn-outline-info me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="m-0 text-info">Add Game</h1>
+            </div>
+
+            <form method="POST" th:action="@{/games/create}" class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label for="title" class="form-label text-light">Title</label>
+                    <input type="text" name="title" id="title" th:field="*{game.title}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Title" th:value="${game.title}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="developer" class="form-label text-light">Developer</label>
+                    <input type="text" name="game.developer" id="developer" th:field="*{game.developer}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Developer" th:value="${game.developer}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="publisher" class="form-label text-light">Publisher</label>
+                    <input type="text" name="game.publisher" id="publisher" th:field="*{game.publisher}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Publisher" th:value="${game.publisher}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="genre" class="form-label text-light">Genre</label>
+                    <input type="text" name="game.genre" id="genre" th:field="*{game.genre}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Genre" th:value="${game.genre}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="platformSelect" class="form-label text-light">Platform</label>
+                    <select id="platformSelect" name="game.platformSelect" th:field="${game.platformId}"
+                            class="form-select bg-dark text-light border-info">
+                        <option th:each="platform : ${platforms}"
+                                th:value="${platform.id}"
+                                th:text="${platform.name}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gameVersionId" class="form-label text-light">Initial Version Id</label>
+                    <input type="text" name="gameVersion.id" id="gameVersionId" th:field="*{gameVersion.version}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Id" th:value="${gameVersion.id.id}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gameVersionRelease" class="form-label text-light">Initial Version Release Date</label>
+                    <input type="date" name="gameVersion.release" id="gameVersionRelease" th:field="*{gameVersion.release}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Release Date" th:value="${gameVersion.release}">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gameVersionNotes" class="form-label text-light">Initial Version Release Notes</label>
+                    <input type="text" name="gameVersion.notes" id="gameVersionNotes" th:field="*{gameVersion.notes}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Release Notes" th:value="${gameVersion.notes}" required>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-outline-info fw-bold mt-3">Add Game</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

@@ -4,6 +4,7 @@ import com.superbleep.rvgamvc.domain.GameVersionId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameDTO {
@@ -21,10 +22,13 @@ public class GameDTO {
     @NotBlank(message = "Genre is required!")
     private String genre;
 
-    @NotNull
+    @NotNull(message = "Platform is required!")
     private Long platformId;
 
-    private List<GameVersionId> GameVersionIds;
+    private List<GameVersionId> GameVersionIds = new ArrayList<>();
+
+    public GameDTO() {
+    }
 
     public GameDTO(Long id, String title, String developer, String publisher, String genre, Long platformId,
                    List<GameVersionId> gameVersionIds) {

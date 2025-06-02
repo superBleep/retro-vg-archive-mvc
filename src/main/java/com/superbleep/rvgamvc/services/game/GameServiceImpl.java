@@ -50,14 +50,14 @@ public class GameServiceImpl implements GameService {
     }
 
     private void checkPlatformId(Long platformId) {
-        if(!platformRepository.existsById(platformId))
+        if (!platformRepository.existsById(platformId))
             throw new RuntimeException("Platform with id " + platformId + " doesn't exist in the database!");
     }
 
     private Game save(GameDTO dto) {
         Game newGame = gameMapper.toGame(dto);
         List<GameVersion> gameVersions = gameVersionRepository.findAllById(dto.getGameVersionIds());
-        Platform platform = platformRepository.findById(dto.getId()).get();
+        Platform platform = platformRepository.findById(dto.getPlatformId()).get();
 
         newGame.setGameVersions(gameVersions);
         newGame.setPlatform(platform);
@@ -69,15 +69,12 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public GameDTO create(GameDTO gameDTO) {
         Long platformId = gameDTO.getPlatformId();
-        List<GameVersionId> gameVersionIds = gameDTO.getGameVersionIds();
 
         checkPlatformId(platformId);
-        checkGameVersionIds(gameVersionIds);
 
         Game savedGame = save(gameDTO);
 
         platformRepository.findById(platformId).get().getGames().add(savedGame);
-        gameVersionRepository.findAllById(gameVersionIds).forEach(gameVersion -> gameVersion.setGame(savedGame));
 
         return gameMapper.toDto(savedGame);
     }
