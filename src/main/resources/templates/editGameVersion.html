@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Edit Game Version</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/qol.css"/>
+    </head>
+    <body class="bg-dark text-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-start mb-4">
+                <a href="#" th:href="@{/gameVersions}" class="btn btn-outline-info me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="m-0 text-info">Edit Game Version</h1>
+            </div>
+
+            <form method="POST" th:action="@{/gameVersions/update}" class="row g-3 mb-4">
+                <input type="hidden" name="gameId" th:value="*{gameVersion.gameId}">
+
+                <div class="col-md-3">
+                    <label for="gameVersionId" class="form-label text-light">Version</label>
+                    <input type="text" name="gameVersion.id" id="gameVersionId" th:field="*{gameVersion.version}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Id" th:value="${gameVersion.id.id}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gameVersionRelease" class="form-label text-light">Release Date</label>
+                    <input type="date" name="gameVersion.release" id="gameVersionRelease" th:field="*{gameVersion.release}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Release Date" th:value="${gameVersion.release}">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gameVersionNotes" class="form-label text-light">Release Notes</label>
+                    <input type="text" name="gameVersion.notes" id="gameVersionNotes" th:field="*{gameVersion.notes}"
+                           class="form-control bg-dark text-light border-info"
+                           placeholder="Release Notes" th:value="${gameVersion.notes}" required>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-outline-info fw-bold mt-3">Edit Game Version</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
