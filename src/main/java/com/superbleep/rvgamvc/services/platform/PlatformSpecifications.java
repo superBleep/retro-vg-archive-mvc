@@ -1,6 +1,5 @@
 package com.superbleep.rvgamvc.services.platform;
 
-import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Platform;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;

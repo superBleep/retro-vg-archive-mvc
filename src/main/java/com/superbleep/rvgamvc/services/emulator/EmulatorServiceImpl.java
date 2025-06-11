@@ -7,6 +7,8 @@ import com.superbleep.rvgamvc.mappers.EmulatorMapper;
 import com.superbleep.rvgamvc.repositories.EmulatorRepository;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class EmulatorServiceImpl implements EmulatorService {
+    private static final Logger logger = LoggerFactory.getLogger(EmulatorService.class);
+
     private final EmulatorRepository emulatorRepository;
     private final PlatformRepository platformRepository;
     private final EmulatorMapper emulatorMapper;
@@ -29,6 +33,8 @@ public class EmulatorServiceImpl implements EmulatorService {
     }
 
     private void checkPlatformIds(List<Long> platformIds) {
+        logger.info("Checking platform ids");
+
         if (platformIds.isEmpty())
             throw new RuntimeException("An emulator must have at least one platform associated!");
 
@@ -45,6 +51,8 @@ public class EmulatorServiceImpl implements EmulatorService {
     }
 
     private Emulator save(EmulatorDTO dto) {
+        logger.info("Saving emulator");
+
         Emulator newEmulator = emulatorMapper.toEmulator(dto);
         List<Platform> platforms = platformRepository.findAllById(dto.getPlatformIds());
         newEmulator.setPlatforms(platforms);
@@ -55,6 +63,8 @@ public class EmulatorServiceImpl implements EmulatorService {
     @Override
     @Transactional
     public EmulatorDTO create(EmulatorDTO emulatorDTO) {
+        logger.info("Creating emulator");
+
         List<Long> platformIds = emulatorDTO.getPlatformIds();
         checkPlatformIds(platformIds);
 
@@ -67,6 +77,8 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public EmulatorDTO findById(Long id) {
+        logger.info("Searching emulator by id");
+
         Optional<Emulator> emulatorOptional = emulatorRepository.findById(id);
 
         if (emulatorOptional.isEmpty())
@@ -77,6 +89,8 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public List<EmulatorDTO> findAllById(List<Long> ids) {
+        logger.info("Searching emulators by id");
+
         List<Emulator> emulators = emulatorRepository.findAllById(ids);
 
         return emulators.stream().map(emulatorMapper::toDto).toList();
@@ -84,6 +98,8 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public Page<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear, Pageable pageable) {
+        logger.info("Searching emulators by filters");
+
         Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear);
         Page<Emulator> page = emulatorRepository.findAll(spec, pageable);
 
@@ -92,6 +108,8 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public List<EmulatorDTO> findAll() {
+        logger.info("Searching all emulators");
+
         List<Emulator> emulators = emulatorRepository.findAll();
 
         return emulators.stream().map(emulatorMapper::toDto).toList();
@@ -100,6 +118,8 @@ public class EmulatorServiceImpl implements EmulatorService {
     @Override
     @Transactional
     public EmulatorDTO update(EmulatorDTO emulatorDTO) {
+        logger.info("Updating emulator");
+
         Long id = emulatorDTO.getId();
         List<Long> platformIds = emulatorDTO.getPlatformIds();
 
@@ -129,6 +149,8 @@ public class EmulatorServiceImpl implements EmulatorService {
 
     @Override
     public void deleteById(Long id) {
+        logger.info("Deleting emulator");
+
         Optional<Emulator> emulatorOptional = emulatorRepository.findById(id);
 
         if (emulatorOptional.isEmpty())

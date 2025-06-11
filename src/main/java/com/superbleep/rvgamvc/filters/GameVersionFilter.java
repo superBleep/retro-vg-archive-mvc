@@ -1,7 +1,5 @@
 package com.superbleep.rvgamvc.filters;
 
-import java.time.LocalDate;
-
 public class GameVersionFilter {
     private String gameTitle;
     private String version;

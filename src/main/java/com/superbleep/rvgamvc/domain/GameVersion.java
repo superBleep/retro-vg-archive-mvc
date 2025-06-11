@@ -1,7 +1,6 @@
 package com.superbleep.rvgamvc.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.util.Date;
 

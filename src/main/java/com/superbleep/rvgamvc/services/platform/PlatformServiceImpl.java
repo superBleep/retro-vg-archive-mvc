@@ -8,7 +8,10 @@ import com.superbleep.rvgamvc.mappers.PlatformMapper;
 import com.superbleep.rvgamvc.repositories.EmulatorRepository;
 import com.superbleep.rvgamvc.repositories.GameRepository;
 import com.superbleep.rvgamvc.repositories.PlatformRepository;
+import com.superbleep.rvgamvc.services.emulator.EmulatorService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class PlatformServiceImpl implements PlatformService {
+    private static final Logger logger = LoggerFactory.getLogger(EmulatorService.class);
+
     private final PlatformRepository platformRepository;
     private final EmulatorRepository emulatorRepository;
     private final GameRepository gameRepository;
@@ -33,6 +38,8 @@ public class PlatformServiceImpl implements PlatformService {
     }
 
     private void checkIds(List<Long> emulatorIds, List<Long> gameIds) {
+        logger.info("Checking emulator and game ids");
+
         boolean validPlatforms = emulatorIds.stream()
                 .allMatch(emulatorRepository::existsById);
 
@@ -57,6 +64,8 @@ public class PlatformServiceImpl implements PlatformService {
     }
 
     private Platform save(PlatformDTO dto) {
+        logger.info("Saving platform");
+
         Platform newPlatform = platformMapper.toPlatform(dto);
 
         List<Emulator> emulators = emulatorRepository.findAllById(dto.getEmulatorIds());
@@ -70,6 +79,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public PlatformDTO create(PlatformDTO platformDTO) {
+        logger.info("Creating platform");
+
         List<Long> emulatorIds = platformDTO.getEmulatorIds();
         List<Long> gameIds = platformDTO.getGameIds();
 
@@ -83,6 +94,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public PlatformDTO findById(Long id) {
+        logger.info("Searching platform by id");
+
         Optional<Platform> platformOptional = platformRepository.findById(id);
 
         if (platformOptional.isEmpty())
@@ -93,6 +106,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public List<PlatformDTO> findAllById(List<Long> ids) {
+        logger.info("Searching all platforms by id");
+
         List<Platform> platforms = platformRepository.findAllById(ids);
 
         return platforms.stream().map(platformMapper::toDto).toList();
@@ -100,6 +115,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public Page<PlatformDTO> findByFilters(String name, String manufacturer, Integer releaseYear, Pageable pageable) {
+        logger.info("Searching platforms by filters");
+
         Specification<Platform> spec = PlatformSpecifications.filterByFields(name, manufacturer, releaseYear);
         Page<Platform> page = platformRepository.findAll(spec, pageable);
 
@@ -108,6 +125,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public List<PlatformDTO> findAll() {
+        logger.info("Searching all platforms");
+
         List<Platform> platforms = platformRepository.findAll();
 
         return platforms.stream().map(platformMapper::toDto).toList();
@@ -116,6 +135,8 @@ public class PlatformServiceImpl implements PlatformService {
     @Override
     @Transactional
     public PlatformDTO update(PlatformDTO platformDTO) {
+        logger.info("Updating platform");
+
         Long id = platformDTO.getId();
         List<Long> emulatorIds = platformDTO.getEmulatorIds();
         List<Long> gameIds = platformDTO.getGameIds();
@@ -158,6 +179,8 @@ public class PlatformServiceImpl implements PlatformService {
 
     @Override
     public void deleteById(Long id) {
+        logger.info("Deleting platform");
+
         if (!platformRepository.existsById(id))
             throw new RuntimeException("Platform not found!");
 

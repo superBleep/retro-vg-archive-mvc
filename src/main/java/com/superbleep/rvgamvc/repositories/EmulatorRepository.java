@@ -1,7 +1,6 @@
 package com.superbleep.rvgamvc.repositories;
 
 import com.superbleep.rvgamvc.domain.Emulator;
-import com.superbleep.rvgamvc.domain.Platform;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

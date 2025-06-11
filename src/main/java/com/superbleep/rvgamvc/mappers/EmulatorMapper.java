@@ -3,10 +3,10 @@ package com.superbleep.rvgamvc.mappers;
 import com.superbleep.rvgamvc.domain.Emulator;
 import com.superbleep.rvgamvc.domain.Platform;
 import com.superbleep.rvgamvc.dto.EmulatorDTO;
-import lombok.experimental.Accessors;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-import java.lang.annotation.Target;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)

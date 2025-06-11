@@ -1,7 +1,5 @@
 package com.superbleep.rvgamvc.controllers;
 
-import com.superbleep.rvgamvc.domain.Game;
-import com.superbleep.rvgamvc.domain.GameVersion;
 import com.superbleep.rvgamvc.domain.GameVersionId;
 import com.superbleep.rvgamvc.dto.GameDTO;
 import com.superbleep.rvgamvc.dto.GameVersionDTO;
