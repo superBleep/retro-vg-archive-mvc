@@ -9,6 +9,8 @@ import com.superbleep.rvgamvc.repositories.PlatformRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +21,9 @@ import java.util.Optional;
 
 @Service
 public class EmulatorServiceImpl implements EmulatorService {
+    @Autowired
+    @Value("${spring.datasource.platform}")
+    private String dbms;
     private static final Logger logger = LoggerFactory.getLogger(EmulatorService.class);
 
     private final EmulatorRepository emulatorRepository;
@@ -100,7 +105,7 @@ public class EmulatorServiceImpl implements EmulatorService {
     public Page<EmulatorDTO> findByFilters(String name, String developer, String platformName, Integer releaseYear, Pageable pageable) {
         logger.info("Searching emulators by filters");
 
-        Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear);
+        Specification<Emulator> spec = EmulatorSpecifications.filterByFields(name, developer, platformName, releaseYear, dbms);
         Page<Emulator> page = emulatorRepository.findAll(spec, pageable);
 
         return page.map(emulatorMapper::toDto);

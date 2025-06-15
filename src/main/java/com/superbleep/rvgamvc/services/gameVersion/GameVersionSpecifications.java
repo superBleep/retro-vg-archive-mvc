@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameVersionSpecifications {
-    public static Specification<GameVersion> filterByFields(String gameTitle, String version, Integer releaseYear, String notes) {
+    public static Specification<GameVersion> filterByFields(String gameTitle, String version, Integer releaseYear, String notes, String dbms) {
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -23,9 +23,17 @@ public class GameVersionSpecifications {
             if (version != null && !version.isBlank())
                 predicates.add(cb.like(cb.lower(root.get("id").get("id")), version.toLowerCase() + "%"));
             if (releaseYear != null) {
-                Expression<Integer> yearExpression = cb.function(
-                        "year", Integer.class, root.get("release"));
-                predicates.add(cb.equal(yearExpression, releaseYear));
+                Expression<?> yearExpression;
+
+                if ("postgres".equalsIgnoreCase(dbms)) {
+                    Expression<Double> yearExpr = cb.function(
+                            "date_part", Double.class, cb.literal("year"), root.get("release")
+                    );
+                    predicates.add(cb.equal(yearExpr, releaseYear.doubleValue()));
+                } else {
+                    yearExpression = cb.function("year", Integer.class, root.get("release"));
+                    predicates.add(cb.equal(yearExpression, releaseYear));
+                }
             }
             if (notes != null && !notes.isBlank())
                 predicates.add(cb.like(cb.lower(root.get("notes")), notes.toLowerCase() + "%"));

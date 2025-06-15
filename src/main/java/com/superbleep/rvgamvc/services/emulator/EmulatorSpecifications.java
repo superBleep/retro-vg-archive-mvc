@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmulatorSpecifications {
-    public static Specification<Emulator> filterByFields(String name, String developer, String platformName, Integer releaseYear) {
+    public static Specification<Emulator> filterByFields(String name, String developer, String platformName, Integer releaseYear, String dbms) {
         return ((root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
@@ -20,9 +20,17 @@ public class EmulatorSpecifications {
                 if (developer != null && !developer.isBlank())
                     predicates.add(cb.like(cb.lower(root.get("developer")), developer.toLowerCase() + "%"));
                 if (releaseYear != null) {
-                    Expression<Integer> yearExpression = cb.function(
-                            "year", Integer.class, root.get("release"));
-                    predicates.add(cb.equal(yearExpression, releaseYear));
+                    Expression<?> yearExpression;
+
+                    if ("postgres".equalsIgnoreCase(dbms)) {
+                        Expression<Double> yearExpr = cb.function(
+                                "date_part", Double.class, cb.literal("year"), root.get("release")
+                        );
+                        predicates.add(cb.equal(yearExpr, releaseYear.doubleValue()));
+                    } else {
+                        yearExpression = cb.function("year", Integer.class, root.get("release"));
+                        predicates.add(cb.equal(yearExpression, releaseYear));
+                    }
                 }
                 if (platformName != null && !platformName.isBlank()) {
                     Join<Emulator, Platform> join = root.join("platforms");

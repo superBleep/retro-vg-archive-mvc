@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Retro Video Game Archive</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+        <link rel="stylesheet" href="/css/qol.css"/>
+
+        <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body class="bg-dark text-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="border border-info rounded p-4 shadow-lg bg-dark">
+                        <h2 class="text-center text-info mb-4">Retro Video Game Archive - Login</h2>
+
+                        <form class="form-signin" method="post" th:action="@{/performLogin}">
+                            <div th:if="${param.error}" class="text-danger text-center fw-bold mb-3">
+                                Invalid username or password
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label text-light">Username</label>
+                                <input type="text" id="username" name="username"
+                                       class="form-control bg-dark text-light border-info"
+                                       placeholder="Enter username" required autofocus>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label text-light">Password</label>
+                                <input type="password" id="password" name="password"
+                                       class="form-control bg-dark text-light border-info"
+                                       placeholder="Enter password" required>
+                            </div>
+
+                            <button class="btn btn-outline-info fw-bold w-100" type="submit">
+                                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

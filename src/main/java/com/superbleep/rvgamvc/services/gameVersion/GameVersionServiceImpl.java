@@ -11,6 +11,8 @@ import com.superbleep.rvgamvc.services.emulator.EmulatorService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +23,9 @@ import java.util.Optional;
 
 @Service
 public class GameVersionServiceImpl implements GameVersionService {
+    @Autowired
+    @Value("${spring.datasource.platform}")
+    private String dbms;
     private static final Logger logger = LoggerFactory.getLogger(EmulatorService.class);
 
     public final GameVersionRepository gameVersionRepository;
@@ -91,7 +96,7 @@ public class GameVersionServiceImpl implements GameVersionService {
     public Page<GameVersionDTO> findByFilters(String gameTitle, String version, Integer releaseYear, String notes, Pageable pageable) {
         logger.info("Searching games by filters");
 
-        Specification<GameVersion> spec = GameVersionSpecifications.filterByFields(gameTitle, version, releaseYear, notes);
+        Specification<GameVersion> spec = GameVersionSpecifications.filterByFields(gameTitle, version, releaseYear, notes, dbms);
         Page<GameVersion> page = gameVersionRepository.findAll(spec, pageable);
 
         return page.map(gameVersionMapper::toDto);

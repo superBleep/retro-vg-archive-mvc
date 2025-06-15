@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>Access Denied</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.2/css/all.min.css"/>
+
+        <style>
+            body, html {
+                height: 100%;
+            }
+            .centered-container {
+                min-height: 100vh;
+            }
+            .error-box {
+                max-width: 600px;
+            }
+        </style>
+    </head>
+    <body class="bg-dark text-light d-flex justify-content-center align-items-center centered-container">
+        <div class="container error-box text-center">
+            <h1 class="text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>Access Denied
+            </h1>
+
+            <p class="fs-5 mt-3">
+                You do not have permission to access this page.
+            </p>
+
+            <a th:href="${referer != null} ? ${referer} : '/'" class="btn btn-outline-danger fw-bold mt-4">
+                <i class="fas fa-arrow-left me-2"></i>Go Back
+            </a>
+        </div>
+    </body>
+</html>

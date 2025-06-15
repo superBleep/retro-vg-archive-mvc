@@ -12,6 +12,8 @@ import com.superbleep.rvgamvc.services.emulator.EmulatorService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,6 +24,9 @@ import java.util.Optional;
 
 @Service
 public class PlatformServiceImpl implements PlatformService {
+    @Autowired
+    @Value("${spring.datasource.platform}")
+    private String dbms;
     private static final Logger logger = LoggerFactory.getLogger(EmulatorService.class);
 
     private final PlatformRepository platformRepository;
@@ -117,7 +122,7 @@ public class PlatformServiceImpl implements PlatformService {
     public Page<PlatformDTO> findByFilters(String name, String manufacturer, Integer releaseYear, Pageable pageable) {
         logger.info("Searching platforms by filters");
 
-        Specification<Platform> spec = PlatformSpecifications.filterByFields(name, manufacturer, releaseYear);
+        Specification<Platform> spec = PlatformSpecifications.filterByFields(name, manufacturer, releaseYear, dbms);
         Page<Platform> page = platformRepository.findAll(spec, pageable);
 
         return page.map(platformMapper::toDto);
