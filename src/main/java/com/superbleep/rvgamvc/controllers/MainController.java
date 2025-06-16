@@ -10,6 +10,11 @@ public class MainController {
         return "login";
     }
 
+    @GetMapping("/logout")
+    public String showLogOutConfirmation() {
+        return "logout";
+    }
+
     @GetMapping("/accessDenied")
     public String accessDeniedPage(){
         return "accessDenied";

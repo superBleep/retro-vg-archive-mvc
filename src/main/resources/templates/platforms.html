@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Platforms</title>
@@ -83,8 +83,9 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-end">
-                <a href="#" th:href="@{/platforms/add}" class="btn btn-outline-info fw-bold mt-3">Add Platform</a>
+            <div class="d-flex justify-content-between mt-3">
+                <a href="#" sec:authorize="isAuthenticated()" th:href="@{/logout}" class="btn btn-outline-danger fw-bold">Logout</a>
+                <a href="#" th:href="@{/platforms/add}" class="btn btn-outline-info fw-bold">Add Platform</a>
             </div>
 
             <div class="d-flex justify-content-center mt-4">
