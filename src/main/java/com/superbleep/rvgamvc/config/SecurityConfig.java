@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/emulators", "/platforms", "/games", "/gameVersions", "/error").hasAnyRole("REGULAR", "MODERATOR")
                         .requestMatchers("/*/add", "/*/edit/*", "/*/remove/*", "/*/create", "/*/update", "/*/delete").hasRole("MODERATOR")
-                        .requestMatchers("/webjars/**", "/login", "/resources/**", "/performLogin").permitAll()
+                        .requestMatchers("/webjars/**", "/login", "/resources/**", "/performLogin", "/actuator/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

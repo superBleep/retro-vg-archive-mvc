@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rvga-mvc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rvga-mvc
+  template:
+    metadata:
+      labels:
+        app: rvga-mvc
+    spec:
+      imagePullSecrets:
+        - name: rvgasecret
+      containers:
+        - name: rvga-mvc
+          image: superbleep/rvga-mvc
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5433/rvga_mvc
+            - name: SPRING_DATASOURCE_USERNAME
+              value: rvga_admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: pass
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10

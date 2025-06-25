@@ -37,3 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 /src/main/resources/data-h2.sql
+/src/main/resources/data-postgres.sql
