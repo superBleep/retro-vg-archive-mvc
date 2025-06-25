@@ -1,0 +1,23 @@
+config:
+  clients:
+    - url: http://loki:3100/loki/api/v1/push
+  scrape_configs:
+    - job_name: kubernetes-pods
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_name]
+          regex: ^postgres.*
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_name]
+          regex: ^rvga-mvc.*
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_container_name]
+          regex: POD
+          action: drop
+      static_configs:
+        - targets:
+            - localhost
+          labels:
+            job: kubernetes-pods
+            __path__: /var/log/containers/*.log
